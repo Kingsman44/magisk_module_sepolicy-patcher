@@ -1,0 +1,6 @@
+id=Sepolicy-patcher
+name=Sepolicy
+version=r1
+versionCode=20210402
+author=kingsman44
+description=Fix all Sepolicy from kernel logs.
