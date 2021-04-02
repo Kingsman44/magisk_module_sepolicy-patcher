@@ -13,15 +13,39 @@ for i in $fe; do
     ge=$(grep $i $1 | grep "$d" | sed -n -e 's/^.*tcontext=//p' | cut -d: -f3 | sort | uniq)
     ge="${ge// /}"
     for r in $ge; do
-      echo "allow $i $r:$d { $se}" >> $MODPATH/sepolicy.rule
-      echo "allow $i $r:$d { $se}"
+      z=$(grep "allow $i $r:$d { $se}" $MODPATH/sepolicy.rule)
+      if [ -z $z ]; then
+        echo "allow $i $r:$d { $se}" >> $MODPATH/sepolicy.rule
+        echo "allow $i $r:$d { $se}" >> /sdcard/sepolicy-fixer/$i.te
+        echo "allow $i $r:$d { $se}"
+      fi
     done
   done
 done
 }
-rm -rf $MODPATH/kernel.log
-dmesg > $MODPATH/kernel.log
 
+if [ -d /sdcard/sepolicy-fixer ]; then
+rm -rf /sdcard/sepolicy-fixer
+fi
+mkdir /sdcard/sepolicy-fixer
+
+dmesg > $MODPATH/kernel.log
+logcat -d > $MODPATH/log.txt
+
+echo "Finding Selinux denials ..."
+echo "Found:"
+echo ""
 sepolicy $MODPATH/kernel.log
+sepolicy $MODPATH/log.txt
+echo ""
+
+if [ -f /sdcard/logs.txt ]; then
+echo "Finding denials from /sdcard/logs.txt"
+echo "Found:"
+echo ""
+sepolicy /sdcard/logs.txt
+echo ""
+fi
 rm -rf $MODPATH/temp.txt
 rm -rf $MODPATH/kernel.log
+rm -rf $MODPATH/log.txt
