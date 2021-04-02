@@ -15,7 +15,7 @@ for i in $fe; do
     for r in $ge; do
       z=$(grep "allow $i $r:$d { $se}" $MODPATH/sepolicy.rule)
       if [ -z $z ]; then
-        echo "allow $i $r:$d { $se}" >> $MODPATH/sepolicy.rule
+        echo "allow $i $r $d { $se}" >> $MODPATH/sepolicy.rule
         echo "allow $i $r:$d { $se}" >> /sdcard/sepolicy-fixer/$i.te
         echo "allow $i $r:$d { $se}"
       fi
