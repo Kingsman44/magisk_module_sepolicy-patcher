@@ -1,5 +1,5 @@
 sepolicy() {
-fe=$(grep avc: $1 | sed -n -e 's/^.*scontext=//p' | cut -d: -f3 | sort  | uniq)
+fe=$(grep "avc: denied" $1 | sed -n -e 's/^.*scontext=//p' | cut -d: -f3 | sort  | uniq)
 for i in $fe; do
   se=''
   rm -rf $MODPATH/temp.txt
