@@ -16,6 +16,7 @@ for i in $fe; do
       z=$(grep "allow $i $r:$d { $se}" $MODPATH/sepolicy.rule)
       if [ -z $z ]; then
         echo "allow $i $r $d { $se}" >> $MODPATH/sepolicy.rule
+        magiskpolicy --live "allow $i $r $d { $se}"
         echo "allow $i $r:$d { $se}" >> /sdcard/sepolicy-fixer/$i.te
         echo "allow $i $r:$d { $se}"
       fi
@@ -32,20 +33,24 @@ mkdir /sdcard/sepolicy-fixer
 dmesg > $MODPATH/kernel.log
 logcat -d > $MODPATH/log.txt
 
-echo "Finding Selinux denials ..."
-echo "Found:"
+echo ""
+echo "Fixings Selinux denials ..."
 echo ""
 sepolicy $MODPATH/kernel.log
 sepolicy $MODPATH/log.txt
 echo ""
 
 if [ -f /sdcard/logs.txt ]; then
-echo "Finding denials from /sdcard/logs.txt"
-echo "Found:"
+echo "Fixings denials from /sdcard/logs.txt"
 echo ""
 sepolicy /sdcard/logs.txt
 echo ""
 fi
+
+sleep 2
+echo "Adding all sepolicy's to sepolicy.rule"
+sleep 2
+
 rm -rf $MODPATH/temp.txt
 rm -rf $MODPATH/kernel.log
 rm -rf $MODPATH/log.txt
